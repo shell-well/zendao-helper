@@ -6,6 +6,7 @@
 // @require     https://cdn.jsdelivr.net/gh/honxinn/workday-cn@48b29366ab802a70b7ca54caf9d3b60982accb10/lib/workday-cn.umd.js
 // @grant       GM_addStyle
 // @grant       GM_setClipboard
+// @run-at      document-start
 // @version     2.1.3
 // @author      LHQ & CHH & ZCX && zagger
 // @license     GPLv3
@@ -15,6 +16,15 @@
 // ==/UserScript==
 
 (() => {
+  // 禅道打开后会在右下角弹出升级提示（企业版无关闭该提示的配置项），
+  // 在 document-start 阶段抢先写入 hidePatch cookie 拦截该提示（等价于 $.cookie("hidePatch", true)），并持久化 30 天
+  try {
+    document.cookie = 'hidePatch=true; path=/; max-age=2592000';
+    console.log('(zm) 已设置 hidePatch=true，拦截升级提示');
+  } catch (e) {
+    console.warn('(zm) 设置 hidePatch 失败', e);
+  }
+
   $.noConflict(true)(document).ready(async ($) => {
       // 面板策略管理
       const panelStrategies = {
